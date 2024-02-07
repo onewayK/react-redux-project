@@ -1,42 +1,56 @@
 import { SimpleSouthKoreaMapChart } from "react-simple-south-korea-map-chart";
+const KoreanMapChart = ({dustData, sidoList}) => {
 
-const data = [
-    { locale: "부산광역시", count: 1500 },
-    { locale: "대구광역시", count: 3000 },
-    { locale: "대전광역시", count: 400 },
-    { locale: "강원도", count: 2500 },
-    { locale: "광주광역시", count: 1000 },
-    { locale: "경기도", count: 4000 },
-    { locale: "인천광역시", count: 2200 },
-    { locale: "제주특별자치도", count: 100 },
-    { locale: "충청북도", count: 49 },
-    { locale: "경상북도", count: 2000 },
-    { locale: "전라북도", count: 3300 },
-    { locale: "세종특별자치시", count: 110 },
-    { locale: "충청남도", count: 10 },
-    { locale: "경상남도", count: 0 },
-    { locale: "전라남도", count: 250 },
-    { locale: "울산광역시", count: 100 },
-    { locale: "서울특별시", count: 10000 },
-]
+    // initialize mapData
+    let mapData = {};
 
-const setColorByCount = (count) => {
-    if (count === 0) return "#F1F1F1";
-    if (count > 5000) return "#79D3C4";
-    if (count > 3000) return "#43cdb6";
-    if (count > 1000) return "#61CDBB";
-    if (count > 200) return "#91D9CD";
-    if (count > 100) return "#A9DFD6";
-    if (count > 50) return "#C1E5DF";
-    if (count > 5) return "#D9EBE8";
-    else return "#ebfffd";
-}
+    // merge dustData and sidoList
+    sidoList.map((item) => {
+        mapData[item.sidoFullName] = dustData.map((item2) => {
+            if (item2.sidoName === item.sidoName) {
+                return item2.pm10Value;
+            }
+        }).filter(data => data !== undefined)
+    })
 
-const KoreanMapChart = () => {
+    // set mapData
+    Object.keys(mapData).map((item) => {
+        let dustCount = 0;
+        // check if dustCount is exist in map
+        if (mapData[item].length > 0) {
+            // if dustCount exists then calculate the average of dustCount
+            for(let i = 0; i < mapData[item].length; i++) {
+                dustCount += mapData[item][i];
+            }
+            mapData[item] = dustCount % mapData[item].length;
+        } else {
+            mapData[item] = 0;
+        }
+
+    })
+
+    // set map data
+    const data = Object.keys(mapData).map((item, index) => {
+        return {
+            locale: item,
+            count: mapData[item]
+        }
+    })
+
+    // set map color
+    const setColorByCount = (count) => {
+        if (count > 0) return "#d0ecff";   // 좋음
+        if (count > 150) return "#ffd6da";  // 매우나쁨
+        if (count > 81) return "#f8f7c6";   // 나쁨
+        if (count > 30) return "#caf2de";   // 보통
+        else return "#cbd0d3";              // 데이터없음
+    }
+
     return (
         <SimpleSouthKoreaMapChart
             data={data}
             setColorByCount={setColorByCount}
+            unit={"㎍/㎥"}
         />
     )
 }
