@@ -1,13 +1,18 @@
 import './App.css';
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import { Row, Col } from "antd";
 import KoreanMap from "./components/KoreanMap"; // KoreanMap Component
 import FineDust from "./components/FineDust";
 import data from './data/data.json';
+import ReqDustData from "./components/ReqDustData";
 
 function App() {
 
-    const dustData = data.response.body.items;
     const sidoList = [
+        {
+            sidoName: "전국",
+            sidoFullName: "전국"
+        },
         {
             sidoName: "서울",
             sidoFullName: "서울특별시"
@@ -62,16 +67,27 @@ function App() {
         }
     ]
 
+    const dustData = ReqDustData();
+
     return (
-        <div>
-            <KoreanMap
-                dustData={dustData}
-                sidoList={sidoList}
-            />
-            <FineDust
-                rawData={dustData}
-            />
-        </div>
+        <>
+            <div style={{"marginTop": "100px"}}>
+                <Row justify={"center"}>
+                    <Col span={9}>
+                        <KoreanMap
+                            dustData={dustData}
+                            sidoList={sidoList}
+                        />
+                    </Col>
+                    <Col span={13}>
+                        <FineDust
+                            rawData={dustData}
+                            sidoList={sidoList}
+                        />
+                    </Col>
+                </Row>
+            </div>
+        </>
     );
 }
 
