@@ -3,10 +3,18 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { createStore } from'redux';
+import setFavorite from './reducers';
+
+const store = createStore(setFavorite);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <App />
+    <App
+        dispatch={store.dispatch}
+        value={store.getState()}
+        setFavorite={() => store.dispatch({type: 'SET_FAVORITE'})}
+    />
 );
 
 // If you want to start measuring performance in your app, pass a function
