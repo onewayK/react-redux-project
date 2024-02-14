@@ -11,9 +11,8 @@ const store = createStore(setFavorite);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <App
-        dispatch={store.dispatch}
         value={store.getState()}
-        setFavorite={() => store.dispatch({type: 'SET_FAVORITE'})}
+        setFavorite={store.dispatch}
     />
 );
 
